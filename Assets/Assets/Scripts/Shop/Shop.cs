@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Shop : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class Shop : MonoBehaviour
     //selected item
     public int selectedItem;
     public int selectedItemCost;
+
+    //messages
+    public Text message;
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -56,14 +60,31 @@ public class Shop : MonoBehaviour
     {
         Player player = GameObject.Find("Player").GetComponent<Player>();
 
-        if(player.gems < selectedItemCost)
+        //check for enough gems
+        if (player.gems < selectedItemCost) 
         {
-            Debug.Log("Not enough gems");
+            message.text = "You don't have enough gems";
         }
         else
         {
             player.gems -= selectedItemCost;
-            Debug.Log("Done");
+            message.text = "Item purchased";
+            UIManager.Instance.UpdateGemsCountHud(player.gems);
+            UIManager.Instance.playerGemsCountText.text = "" + player.gems + "G";
+
+            switch (selectedItem)
+            {
+                case 0: //flame sword
+                    //create FlameSword function that increases the sword damage
+                    break;
+                case 1: //boots of flight
+                    player.jumpForce *= 1.5f;
+                    break;
+                case 2: //key to the castle
+                    GameManager.Instance.hasKeyToCastle = true;
+                    break;
+            }
+
         }
     }
 }

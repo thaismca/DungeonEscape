@@ -27,7 +27,7 @@ public class Attack : MonoBehaviour {
     //cooldown system
     private IEnumerator CanDamage()
     {
-        yield return new WaitForSeconds(0.7f);
+        yield return new WaitForSeconds(0.9f);
         _canDamage = true;
     }
 }

@@ -87,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bf3b591ab086d14f96f376e10b4de15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gems: 0
+  gems: 1
 --- !u!212 &212791381358017518
 SpriteRenderer:
   m_ObjectHideFlags: 1

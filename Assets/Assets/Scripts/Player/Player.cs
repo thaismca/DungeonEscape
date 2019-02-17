@@ -7,11 +7,10 @@ public class Player : MonoBehaviour, IDamageable
 
     [SerializeField]
     private float _speed;
-    [SerializeField]
-    private float _jumpForce;
+    public float jumpForce; //public so it can be changed from Shop when Player purchases Boots Of Flight
     [SerializeField]
     private bool _resetJump;
-    public int gems;
+    public int gems = 0;
 
     //check states
     private bool _isDead = false;
@@ -49,20 +48,23 @@ public class Player : MonoBehaviour, IDamageable
         _swordArcSprite = transform.GetChild(1).GetComponent<SpriteRenderer>();
 
         //Setting Health
-        Health = 5;
-
+        Health = 4;
+        //Setting Gems
+        UIManager.Instance.UpdateGemsCountHud(gems);
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update ()
     {
         if (_anim.GetCurrentAnimatorStateInfo(0).IsName("Hit")||
+            _anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") ||
             _isDead)
         {
-            return;
+            _playerRb.constraints = RigidbodyConstraints2D.FreezePositionX;
         }
         else
         {
+            _playerRb.constraints = RigidbodyConstraints2D.FreezeRotation;
             PlayerMovement();
             Attack();
         }
@@ -108,7 +110,8 @@ public class Player : MonoBehaviour, IDamageable
         //Jump
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
-            _playerRb.velocity = new Vector2(_playerRb.velocity.x, _jumpForce);
+
+            _playerRb.velocity = new Vector2(_playerRb.velocity.x, jumpForce);
             //Animation Idle -> Jump
             _playerAnimation.JumpAnimation(true);
             StartCoroutine("ResetJumpRoutine");
@@ -161,14 +164,22 @@ public class Player : MonoBehaviour, IDamageable
     //Damage (from IDamageable)
     public void Damage()
     {
-        _playerAnimation.Hit();
         Health--;
+        UIManager.Instance.UpdatePlayerLifeBar(Health);
         if (Health < 1)
         {
             _playerAnimation.Death();
             _isDead = true;
+            return;
         }
+        _playerAnimation.Hit();
     }
 
+    //Add collected Gems
+    public void AddGems(int count)
+    {
+        gems += count;
+        UIManager.Instance.UpdateGemsCountHud(gems);
+    }
 
 }
